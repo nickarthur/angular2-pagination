@@ -44,18 +44,6 @@
 /* 0 */
 /***/ function(module, exports, __webpack_require__) {
 
-	function __export(m) {
-	    for (var p in m) if (!exports.hasOwnProperty(p)) exports[p] = m[p];
-	}
-	__export(__webpack_require__(1));
-	__export(__webpack_require__(3));
-	__export(__webpack_require__(4));
-
-
-/***/ },
-/* 1 */
-/***/ function(module, exports, __webpack_require__) {
-
 	var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
 	    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
 	    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -65,247 +53,9 @@
 	var __metadata = (this && this.__metadata) || function (k, v) {
 	    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 	};
-	var core_1 = __webpack_require__(2);
-	var pagination_service_1 = __webpack_require__(3);
-	var PaginatePipe = (function () {
-	    function PaginatePipe(service) {
-	        this.service = service;
-	    }
-	    PaginatePipe.prototype.transform = function (collection, args) {
-	        var pagination = this._createFromConfig(collection, args);
-	        if (!this._pagination) {
-	            this._pagination = pagination;
-	            this.service.register(this._pagination);
-	        }
-	        else {
-	            /**
-	             * Update itemsPerPage and/or totalItems.
-	             * currentPage is not allowed to be changed in the config,
-	             * it can be set only via service API itself.
-	             */
-	            var itemsPerPage = pagination.itemsPerPage;
-	            var totalItems = pagination.totalItems;
-	            this.service.update(this._pagination.id, { itemsPerPage: itemsPerPage, totalItems: totalItems });
-	        }
-	        if (collection instanceof Array) {
-	            var itemsPerPage = this.service.getItemsPerPage(this._pagination.id);
-	            var start = (this.service.getCurrentPage(this._pagination.id) - 1) * itemsPerPage;
-	            var end = start + itemsPerPage;
-	            return collection.slice(start, end);
-	        }
-	        return collection;
-	    };
-	    PaginatePipe.prototype._createFromConfig = function (collection, args) {
-	        var instance;
-	        var config = args[0];
-	        if (_.isString(config) || _.isNumber(config)) {
-	            instance = {
-	                id: this.service.defaultId,
-	                itemsPerPage: this._parseValue(config, 1),
-	                currentPage: 1,
-	                totalItems: this._parseTotalItems(collection)
-	            };
-	        }
-	        if (_.isObject(config)) {
-	            instance = {
-	                id: config.id || this.service.defaultId,
-	                itemsPerPage: this._parseValue(config.itemsPerPage, 10),
-	                currentPage: this._parseValue(config.currentPage, 1),
-	                totalItems: this._parseTotalItems(collection, config.totalItems)
-	            };
-	        }
-	        if (!instance) {
-	            throw new Error("PaginatePipe: Argument must be a string,\n        number or an object. Got " + typeof args[0]);
-	        }
-	        return instance;
-	    };
-	    PaginatePipe.prototype._parseTotalItems = function (collection, totalItems) {
-	        if (!_.isUndefined(totalItems)) {
-	            return this._parseValue(totalItems);
-	        }
-	        if (collection instanceof Array) {
-	            return collection.length;
-	        }
-	        return undefined;
-	    };
-	    PaginatePipe.prototype._parseValue = function (value, dfault) {
-	        if (!_.isUndefined(value)) {
-	            var parsed = parseInt(value);
-	            if (_.isNumber(parsed)) {
-	                return parsed;
-	            }
-	        }
-	        return dfault;
-	    };
-	    PaginatePipe = __decorate([
-	        core_1.Pipe({
-	            name: 'paginate',
-	            pure: false
-	        }), 
-	        __metadata('design:paramtypes', [pagination_service_1.PaginationService])
-	    ], PaginatePipe);
-	    return PaginatePipe;
-	})();
-	exports.PaginatePipe = PaginatePipe;
-
-
-/***/ },
-/* 2 */
-/***/ function(module, exports) {
-
-	module.exports = require("angular2/core");
-
-/***/ },
-/* 3 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var core_1 = __webpack_require__(2);
-	var DEFAULT_ID = 'ng2_pages';
-	var PaginationService = (function () {
-	    function PaginationService() {
-	        this.change = new core_1.EventEmitter();
-	        this.instances = {};
-	    }
-	    Object.defineProperty(PaginationService.prototype, "defaultId", {
-	        get: function () { return DEFAULT_ID; },
-	        enumerable: true,
-	        configurable: true
-	    });
-	    PaginationService.prototype.register = function (instance) {
-	        if (!instance.id) {
-	            instance.id = DEFAULT_ID;
-	        }
-	        this._checkNumberArg(instance.itemsPerPage, 'pagination.itemsPerPage', 'register');
-	        this._checkNumberArg(instance.totalItems, 'pagination.totalItems', 'register');
-	        this._checkNumberArg(instance.currentPage, 'pagination.currentPage', 'register');
-	        this.instances[instance.id] = instance;
-	        this.change.emit(instance.id);
-	    };
-	    PaginationService.prototype.update = function (id, _a) {
-	        var itemsPerPage = _a.itemsPerPage, totalItems = _a.totalItems;
-	        this._checkPagination(id, 'update');
-	        this._checkNumberArg(itemsPerPage, 'itemsPerPage', 'update', true);
-	        this._checkNumberArg(totalItems, 'totalItems', 'update', true);
-	        var instance = this.instances[id];
-	        var isModified = false;
-	        if (instance.itemsPerPage != itemsPerPage) {
-	            this._setItemsPerPage(id, itemsPerPage);
-	            isModified = true;
-	        }
-	        if (instance.totalItems != totalItems) {
-	            this._setTotalItems(id, totalItems);
-	            isModified = true;
-	        }
-	        if (isModified) {
-	            this.change.emit(id);
-	        }
-	    };
-	    /**
-	     * Returns the current page number.
-	     */
-	    PaginationService.prototype.getCurrentPage = function (id) {
-	        if (this.instances[id]) {
-	            return this.instances[id].currentPage;
-	        }
-	    };
-	    PaginationService.prototype.getItemsPerPage = function (id) {
-	        if (this.instances[id]) {
-	            return this.instances[id].itemsPerPage;
-	        }
-	    };
-	    PaginationService.prototype.getTotalItems = function (id) {
-	        if (this.instances[id]) {
-	            return this.instances[id].totalItems;
-	        }
-	    };
-	    /**
-	     * Sets the current page number.
-	     */
-	    PaginationService.prototype.setCurrentPage = function (id, page) {
-	        if (this.instances[id]) {
-	            var instance = this.instances[id];
-	            var maxPage = Math.ceil(instance.totalItems / instance.itemsPerPage);
-	            var curPage = instance.currentPage;
-	            if (page <= maxPage && 1 <= page && curPage !== page) {
-	                instance.currentPage = page;
-	                this.change.emit(id);
-	                return true;
-	            }
-	        }
-	        return false;
-	    };
-	    /**
-	     * Sets the value of instance.totalItems
-	     */
-	    PaginationService.prototype.setTotalItems = function (id, totalItems) {
-	        this._checkPagination(id, 'setItemsPerPage');
-	        this._checkNumberArg(totalItems, 'totalItems', 'setTotalItems');
-	        this._setTotalItems(id, totalItems);
-	        this.change.emit(id);
-	    };
-	    PaginationService.prototype._setTotalItems = function (id, totalItems) {
-	        var instance = this.instances[id];
-	        var maxPage = Math.ceil(totalItems / instance.itemsPerPage);
-	        var realCurPage = Math.min(instance.currentPage, maxPage) || 1;
-	        instance.currentPage = realCurPage;
-	        instance.totalItems = totalItems;
-	    };
-	    /**
-	     * Sets the value of instance.itemsPerPage.
-	     */
-	    PaginationService.prototype.setItemsPerPage = function (id, itemsPerPage) {
-	        this._checkPagination(id, 'setItemsPerPage');
-	        this._checkNumberArg(itemsPerPage, 'itemsPerPage', 'setItemsPerPage');
-	        this._setItemsPerPage(id, itemsPerPage);
-	        this.change.emit(id);
-	    };
-	    PaginationService.prototype._setItemsPerPage = function (id, itemsPerPage) {
-	        this.instances[id].itemsPerPage = itemsPerPage;
-	    };
-	    /**
-	     * Returns a clone of the pagination instance object matching the id. If no
-	     * id specified, returns the instance corresponding to the default id.
-	     */
-	    PaginationService.prototype.getInstance = function (id) {
-	        if (id === void 0) { id = DEFAULT_ID; }
-	        if (this.instances[id]) {
-	            return _.clone(this.instances[id]);
-	        }
-	    };
-	    PaginationService.prototype._checkPagination = function (id, method) {
-	        if (!this.instances[id]) {
-	            throw new Error("PaginationService[" + method + "]:\n        pagination with provided ID " + id + " no found");
-	        }
-	    };
-	    PaginationService.prototype._checkNumberArg = function (value, arg, method, allowUndef) {
-	        if (allowUndef && !_.isUndefined(value)) {
-	            return;
-	        }
-	        if (!_.isNumber(value) || value < 0) {
-	            throw new Error("PaginationService[" + method + "]:\n        " + arg + " should be a positive number: " + value);
-	        }
-	    };
-	    return PaginationService;
-	})();
-	exports.PaginationService = PaginationService;
-
-
-/***/ },
-/* 4 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-	    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-	    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-	    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-	    return c > 3 && r && Object.defineProperty(target, key, r), r;
-	};
-	var __metadata = (this && this.__metadata) || function (k, v) {
-	    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
-	};
-	var core_1 = __webpack_require__(2);
-	var pagination_service_1 = __webpack_require__(3);
-	__webpack_require__(5);
+	var core_1 = __webpack_require__(1);
+	var pagination_service_1 = __webpack_require__(2);
+	__webpack_require__(3);
 	var PaginationControlsCpm = (function () {
 	    function PaginationControlsCpm(_service) {
 	        var _this = this;
@@ -407,7 +157,7 @@
 	    PaginationControlsCpm = __decorate([
 	        core_1.Component({
 	            selector: 'pagination-controls',
-	            template: __webpack_require__(9),
+	            template: __webpack_require__(7),
 	        }), 
 	        __metadata('design:paramtypes', [pagination_service_1.PaginationService])
 	    ], PaginationControlsCpm);
@@ -417,16 +167,28 @@
 
 
 /***/ },
-/* 5 */
+/* 1 */
+/***/ function(module, exports) {
+
+	module.exports = require("angular2/core");
+
+/***/ },
+/* 2 */
+/***/ function(module, exports) {
+
+	module.exports = require("./pagination-service");
+
+/***/ },
+/* 3 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(6);
+	var content = __webpack_require__(4);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
-	var update = __webpack_require__(8)(content, {});
+	var update = __webpack_require__(6)(content, {});
 	if(content.locals) module.exports = content.locals;
 	// Hot Module Replacement
 	if(false) {
@@ -443,10 +205,10 @@
 	}
 
 /***/ },
-/* 6 */
+/* 4 */
 /***/ function(module, exports, __webpack_require__) {
 
-	exports = module.exports = __webpack_require__(7)();
+	exports = module.exports = __webpack_require__(5)();
 	// imports
 
 
@@ -457,7 +219,7 @@
 
 
 /***/ },
-/* 7 */
+/* 5 */
 /***/ function(module, exports) {
 
 	/*
@@ -513,7 +275,7 @@
 
 
 /***/ },
-/* 8 */
+/* 6 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/*
@@ -767,7 +529,7 @@
 
 
 /***/ },
-/* 9 */
+/* 7 */
 /***/ function(module, exports) {
 
 	module.exports = "module.exports = \"<ul class=\\\"pagination\\\" role=\\\"navigation\\\" aria-label=\\\"Pagination\\\">\\n  <li class=\\\"pagination-previous\\\" [class.disabled]=\\\"getPage() === 1\\\">\\n    <a href=\\\"\\\" (click)=\\\"setPage($event, getPage() - 1)\\\" aria-label=\\\"Prev page\\\">&lsaquo;</a>\\n  </li>\\n\\n  <li [class.active]=\\\"getPage() === page.value\\\" *ngFor=\\\"#page of pages\\\">\\n    <a href=\\\"\\\" (click)=\\\"setPage($event, page.value)\\\">{{ page.label }}</a>\\n  </li>\\n\\n  <li class=\\\"pagination-next\\\" [class.disabled]=\\\"getPage() === pages.length\\\">\\n    <a href=\\\"\\\" (click)=\\\"setPage($event, getPage() + 1)\\\" aria-label=\\\"Next page\\\">&rsaquo;</a>\\n  </li>\\n</ul>\";";

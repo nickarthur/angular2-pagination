@@ -1,7 +1,5 @@
 import {Pipe} from 'angular2/core';
-
 import {PaginationService} from './pagination-service';
-
 import {IPaginationInstance} from './pagination-service';
 
 @Pipe({
