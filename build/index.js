@@ -1,0 +1,776 @@
+(function(e, a) { for(var i in a) e[i] = a[i]; }(exports, /******/ (function(modules) { // webpackBootstrap
+/******/ 	// The module cache
+/******/ 	var installedModules = {};
+
+/******/ 	// The require function
+/******/ 	function __webpack_require__(moduleId) {
+
+/******/ 		// Check if module is in cache
+/******/ 		if(installedModules[moduleId])
+/******/ 			return installedModules[moduleId].exports;
+
+/******/ 		// Create a new module (and put it into the cache)
+/******/ 		var module = installedModules[moduleId] = {
+/******/ 			exports: {},
+/******/ 			id: moduleId,
+/******/ 			loaded: false
+/******/ 		};
+
+/******/ 		// Execute the module function
+/******/ 		modules[moduleId].call(module.exports, module, module.exports, __webpack_require__);
+
+/******/ 		// Flag the module as loaded
+/******/ 		module.loaded = true;
+
+/******/ 		// Return the exports of the module
+/******/ 		return module.exports;
+/******/ 	}
+
+
+/******/ 	// expose the modules object (__webpack_modules__)
+/******/ 	__webpack_require__.m = modules;
+
+/******/ 	// expose the module cache
+/******/ 	__webpack_require__.c = installedModules;
+
+/******/ 	// __webpack_public_path__
+/******/ 	__webpack_require__.p = "";
+
+/******/ 	// Load entry module and return exports
+/******/ 	return __webpack_require__(0);
+/******/ })
+/************************************************************************/
+/******/ ([
+/* 0 */
+/***/ function(module, exports, __webpack_require__) {
+
+	function __export(m) {
+	    for (var p in m) if (!exports.hasOwnProperty(p)) exports[p] = m[p];
+	}
+	__export(__webpack_require__(1));
+	__export(__webpack_require__(3));
+	__export(__webpack_require__(4));
+
+
+/***/ },
+/* 1 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+	    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+	    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+	    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+	    return c > 3 && r && Object.defineProperty(target, key, r), r;
+	};
+	var __metadata = (this && this.__metadata) || function (k, v) {
+	    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+	};
+	var core_1 = __webpack_require__(2);
+	var pagination_service_1 = __webpack_require__(3);
+	var PaginatePipe = (function () {
+	    function PaginatePipe(service) {
+	        this.service = service;
+	    }
+	    PaginatePipe.prototype.transform = function (collection, args) {
+	        var pagination = this._createFromConfig(collection, args);
+	        if (!this._pagination) {
+	            this._pagination = pagination;
+	            this.service.register(this._pagination);
+	        }
+	        else {
+	            /**
+	             * Update itemsPerPage and/or totalItems.
+	             * currentPage is not allowed to be changed in the config,
+	             * it can be set only via service API itself.
+	             */
+	            var itemsPerPage = pagination.itemsPerPage;
+	            var totalItems = pagination.totalItems;
+	            this.service.update(this._pagination.id, { itemsPerPage: itemsPerPage, totalItems: totalItems });
+	        }
+	        if (collection instanceof Array) {
+	            var itemsPerPage = this.service.getItemsPerPage(this._pagination.id);
+	            var start = (this.service.getCurrentPage(this._pagination.id) - 1) * itemsPerPage;
+	            var end = start + itemsPerPage;
+	            return collection.slice(start, end);
+	        }
+	        return collection;
+	    };
+	    PaginatePipe.prototype._createFromConfig = function (collection, args) {
+	        var instance;
+	        var config = args[0];
+	        if (_.isString(config) || _.isNumber(config)) {
+	            instance = {
+	                id: this.service.defaultId,
+	                itemsPerPage: this._parseValue(config, 1),
+	                currentPage: 1,
+	                totalItems: this._parseTotalItems(collection)
+	            };
+	        }
+	        if (_.isObject(config)) {
+	            instance = {
+	                id: config.id || this.service.defaultId,
+	                itemsPerPage: this._parseValue(config.itemsPerPage, 10),
+	                currentPage: this._parseValue(config.currentPage, 1),
+	                totalItems: this._parseTotalItems(collection, config.totalItems)
+	            };
+	        }
+	        if (!instance) {
+	            throw new Error("PaginatePipe: Argument must be a string,\n        number or an object. Got " + typeof args[0]);
+	        }
+	        return instance;
+	    };
+	    PaginatePipe.prototype._parseTotalItems = function (collection, totalItems) {
+	        if (!_.isUndefined(totalItems)) {
+	            return this._parseValue(totalItems);
+	        }
+	        if (collection instanceof Array) {
+	            return collection.length;
+	        }
+	        return undefined;
+	    };
+	    PaginatePipe.prototype._parseValue = function (value, dfault) {
+	        if (!_.isUndefined(value)) {
+	            var parsed = parseInt(value);
+	            if (_.isNumber(parsed)) {
+	                return parsed;
+	            }
+	        }
+	        return dfault;
+	    };
+	    PaginatePipe = __decorate([
+	        core_1.Pipe({
+	            name: 'paginate',
+	            pure: false
+	        }), 
+	        __metadata('design:paramtypes', [pagination_service_1.PaginationService])
+	    ], PaginatePipe);
+	    return PaginatePipe;
+	})();
+	exports.PaginatePipe = PaginatePipe;
+
+
+/***/ },
+/* 2 */
+/***/ function(module, exports) {
+
+	module.exports = require("angular2/core");
+
+/***/ },
+/* 3 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var core_1 = __webpack_require__(2);
+	var DEFAULT_ID = 'ng2_pages';
+	var PaginationService = (function () {
+	    function PaginationService() {
+	        this.change = new core_1.EventEmitter();
+	        this.instances = {};
+	    }
+	    Object.defineProperty(PaginationService.prototype, "defaultId", {
+	        get: function () { return DEFAULT_ID; },
+	        enumerable: true,
+	        configurable: true
+	    });
+	    PaginationService.prototype.register = function (instance) {
+	        if (!instance.id) {
+	            instance.id = DEFAULT_ID;
+	        }
+	        this._checkNumberArg(instance.itemsPerPage, 'pagination.itemsPerPage', 'register');
+	        this._checkNumberArg(instance.totalItems, 'pagination.totalItems', 'register');
+	        this._checkNumberArg(instance.currentPage, 'pagination.currentPage', 'register');
+	        this.instances[instance.id] = instance;
+	        this.change.emit(instance.id);
+	    };
+	    PaginationService.prototype.update = function (id, _a) {
+	        var itemsPerPage = _a.itemsPerPage, totalItems = _a.totalItems;
+	        this._checkPagination(id, 'update');
+	        this._checkNumberArg(itemsPerPage, 'itemsPerPage', 'update', true);
+	        this._checkNumberArg(totalItems, 'totalItems', 'update', true);
+	        var instance = this.instances[id];
+	        var isModified = false;
+	        if (instance.itemsPerPage != itemsPerPage) {
+	            this._setItemsPerPage(id, itemsPerPage);
+	            isModified = true;
+	        }
+	        if (instance.totalItems != totalItems) {
+	            this._setTotalItems(id, totalItems);
+	            isModified = true;
+	        }
+	        if (isModified) {
+	            this.change.emit(id);
+	        }
+	    };
+	    /**
+	     * Returns the current page number.
+	     */
+	    PaginationService.prototype.getCurrentPage = function (id) {
+	        if (this.instances[id]) {
+	            return this.instances[id].currentPage;
+	        }
+	    };
+	    PaginationService.prototype.getItemsPerPage = function (id) {
+	        if (this.instances[id]) {
+	            return this.instances[id].itemsPerPage;
+	        }
+	    };
+	    PaginationService.prototype.getTotalItems = function (id) {
+	        if (this.instances[id]) {
+	            return this.instances[id].totalItems;
+	        }
+	    };
+	    /**
+	     * Sets the current page number.
+	     */
+	    PaginationService.prototype.setCurrentPage = function (id, page) {
+	        if (this.instances[id]) {
+	            var instance = this.instances[id];
+	            var maxPage = Math.ceil(instance.totalItems / instance.itemsPerPage);
+	            var curPage = instance.currentPage;
+	            if (page <= maxPage && 1 <= page && curPage !== page) {
+	                instance.currentPage = page;
+	                this.change.emit(id);
+	                return true;
+	            }
+	        }
+	        return false;
+	    };
+	    /**
+	     * Sets the value of instance.totalItems
+	     */
+	    PaginationService.prototype.setTotalItems = function (id, totalItems) {
+	        this._checkPagination(id, 'setItemsPerPage');
+	        this._checkNumberArg(totalItems, 'totalItems', 'setTotalItems');
+	        this._setTotalItems(id, totalItems);
+	        this.change.emit(id);
+	    };
+	    PaginationService.prototype._setTotalItems = function (id, totalItems) {
+	        var instance = this.instances[id];
+	        var maxPage = Math.ceil(totalItems / instance.itemsPerPage);
+	        var realCurPage = Math.min(instance.currentPage, maxPage) || 1;
+	        instance.currentPage = realCurPage;
+	        instance.totalItems = totalItems;
+	    };
+	    /**
+	     * Sets the value of instance.itemsPerPage.
+	     */
+	    PaginationService.prototype.setItemsPerPage = function (id, itemsPerPage) {
+	        this._checkPagination(id, 'setItemsPerPage');
+	        this._checkNumberArg(itemsPerPage, 'itemsPerPage', 'setItemsPerPage');
+	        this._setItemsPerPage(id, itemsPerPage);
+	        this.change.emit(id);
+	    };
+	    PaginationService.prototype._setItemsPerPage = function (id, itemsPerPage) {
+	        this.instances[id].itemsPerPage = itemsPerPage;
+	    };
+	    /**
+	     * Returns a clone of the pagination instance object matching the id. If no
+	     * id specified, returns the instance corresponding to the default id.
+	     */
+	    PaginationService.prototype.getInstance = function (id) {
+	        if (id === void 0) { id = DEFAULT_ID; }
+	        if (this.instances[id]) {
+	            return _.clone(this.instances[id]);
+	        }
+	    };
+	    PaginationService.prototype._checkPagination = function (id, method) {
+	        if (!this.instances[id]) {
+	            throw new Error("PaginationService[" + method + "]:\n        pagination with provided ID " + id + " no found");
+	        }
+	    };
+	    PaginationService.prototype._checkNumberArg = function (value, arg, method, allowUndef) {
+	        if (allowUndef && !_.isUndefined(value)) {
+	            return;
+	        }
+	        if (!_.isNumber(value) || value < 0) {
+	            throw new Error("PaginationService[" + method + "]:\n        " + arg + " should be a positive number: " + value);
+	        }
+	    };
+	    return PaginationService;
+	})();
+	exports.PaginationService = PaginationService;
+
+
+/***/ },
+/* 4 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+	    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+	    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+	    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+	    return c > 3 && r && Object.defineProperty(target, key, r), r;
+	};
+	var __metadata = (this && this.__metadata) || function (k, v) {
+	    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+	};
+	var core_1 = __webpack_require__(2);
+	var pagination_service_1 = __webpack_require__(3);
+	__webpack_require__(5);
+	var PaginationControlsCpm = (function () {
+	    function PaginationControlsCpm(_service) {
+	        var _this = this;
+	        this._service = _service;
+	        this.change = new core_1.EventEmitter();
+	        this.pages = [];
+	        this._page = 1;
+	        this._id = this._id || this._service.defaultId;
+	        this._changeSub = this._service.change
+	            .subscribe(function (id) {
+	            if (_this._id !== id)
+	                return;
+	            var instance = _this._service.getInstance(_this._id);
+	            _this.pages = _this._createPageArray(instance.currentPage, instance.itemsPerPage, instance.totalItems);
+	            _this._setPage(instance.currentPage);
+	        });
+	    }
+	    PaginationControlsCpm.prototype.ngOnDestroy = function () {
+	        this._changeSub.unsubscribe();
+	    };
+	    /**
+	     * Set the current page number.
+	     */
+	    PaginationControlsCpm.prototype.setPage = function (event, page) {
+	        event.preventDefault();
+	        this._service.setCurrentPage(this._id, page);
+	    };
+	    /**
+	     * Get the current page number.
+	     */
+	    PaginationControlsCpm.prototype.getPage = function () {
+	        return this._service.getCurrentPage(this._id);
+	    };
+	    PaginationControlsCpm.prototype._setPage = function (page) {
+	        if (this._page !== page) {
+	            this._page = page;
+	            this.change.emit({ page: page });
+	        }
+	    };
+	    /**
+	     * Returns an array of IPage objects to use in the pagination controls.
+	     */
+	    PaginationControlsCpm.prototype._createPageArray = function (currentPage, itemsPerPage, totalItems, paginationRange) {
+	        if (paginationRange === void 0) { paginationRange = 5; }
+	        var totalPages = Math.ceil(totalItems / itemsPerPage);
+	        var halfWay = Math.ceil(paginationRange / 2);
+	        var isStart = currentPage <= halfWay;
+	        var isEnd = totalPages - halfWay < currentPage;
+	        var isMiddle = !isStart && !isEnd;
+	        var ellipsesNeeded = paginationRange < totalPages;
+	        var pages = [];
+	        var page = 1;
+	        while (page <= totalPages && page <= paginationRange) {
+	            var pageNumber = this.calculatePageNumber(page, currentPage, paginationRange, totalPages);
+	            var openingEllipsesNeeded = (page === 2 && (isMiddle || isEnd));
+	            var closingEllipsesNeeded = (page === paginationRange - 1 && (isMiddle || isStart));
+	            var label = pageNumber.toString();
+	            if (ellipsesNeeded && (openingEllipsesNeeded || closingEllipsesNeeded)) {
+	                label = '...';
+	            }
+	            pages.push({
+	                label: label,
+	                value: pageNumber
+	            });
+	            page++;
+	        }
+	        return pages;
+	    };
+	    /**
+	     * Given the position in the sequence of pagination links [i],
+	     * figure out what page number corresponds to that position.
+	     */
+	    PaginationControlsCpm.prototype.calculatePageNumber = function (page, currentPage, paginationRange, totalPages) {
+	        if (page === paginationRange) {
+	            return totalPages;
+	        }
+	        if (page === 1) {
+	            return page;
+	        }
+	        var halfWay = Math.ceil(paginationRange / 2);
+	        if (paginationRange < totalPages) {
+	            if (totalPages - halfWay < currentPage) {
+	                return totalPages - paginationRange + page;
+	            }
+	            if (halfWay < currentPage) {
+	                return currentPage - halfWay + page;
+	            }
+	        }
+	        return page;
+	    };
+	    __decorate([
+	        core_1.Input(), 
+	        __metadata('design:type', String)
+	    ], PaginationControlsCpm.prototype, "_id", void 0);
+	    __decorate([
+	        core_1.Output(), 
+	        __metadata('design:type', core_1.EventEmitter)
+	    ], PaginationControlsCpm.prototype, "change", void 0);
+	    PaginationControlsCpm = __decorate([
+	        core_1.Component({
+	            selector: 'pagination-controls',
+	            template: __webpack_require__(9),
+	        }), 
+	        __metadata('design:paramtypes', [pagination_service_1.PaginationService])
+	    ], PaginationControlsCpm);
+	    return PaginationControlsCpm;
+	})();
+	exports.PaginationControlsCpm = PaginationControlsCpm;
+
+
+/***/ },
+/* 5 */
+/***/ function(module, exports, __webpack_require__) {
+
+	// style-loader: Adds some css to the DOM by adding a <style> tag
+
+	// load the styles
+	var content = __webpack_require__(6);
+	if(typeof content === 'string') content = [[module.id, content, '']];
+	// add the styles to the DOM
+	var update = __webpack_require__(8)(content, {});
+	if(content.locals) module.exports = content.locals;
+	// Hot Module Replacement
+	if(false) {
+		// When the styles change, update the <style> tags
+		if(!content.locals) {
+			module.hot.accept("!!./../node_modules/css-loader/index.js!./../node_modules/less-loader/index.js!./pagination-controls-cmp.less", function() {
+				var newContent = require("!!./../node_modules/css-loader/index.js!./../node_modules/less-loader/index.js!./pagination-controls-cmp.less");
+				if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
+				update(newContent);
+			});
+		}
+		// When the module is disposed, remove the <style> tags
+		module.hot.dispose(function() { update(); });
+	}
+
+/***/ },
+/* 6 */
+/***/ function(module, exports, __webpack_require__) {
+
+	exports = module.exports = __webpack_require__(7)();
+	// imports
+
+
+	// module
+	exports.push([module.id, ".pagination {\n  display: inline-block;\n  list-style-type: none;\n  margin: 20px 0;\n  border-radius: 4px;\n}\n.pagination li {\n  display: inline;\n  padding: 0 5px;\n}\n.pagination li.active > a {\n  text-decoration: none;\n  color: black;\n}\n.pagination .disabled > a {\n  color: #777;\n  cursor: not-allowed;\n}\n", ""]);
+
+	// exports
+
+
+/***/ },
+/* 7 */
+/***/ function(module, exports) {
+
+	/*
+		MIT License http://www.opensource.org/licenses/mit-license.php
+		Author Tobias Koppers @sokra
+	*/
+	// css base code, injected by the css-loader
+	module.exports = function() {
+		var list = [];
+
+		// return the list of modules as css string
+		list.toString = function toString() {
+			var result = [];
+			for(var i = 0; i < this.length; i++) {
+				var item = this[i];
+				if(item[2]) {
+					result.push("@media " + item[2] + "{" + item[1] + "}");
+				} else {
+					result.push(item[1]);
+				}
+			}
+			return result.join("");
+		};
+
+		// import a list of modules into the list
+		list.i = function(modules, mediaQuery) {
+			if(typeof modules === "string")
+				modules = [[null, modules, ""]];
+			var alreadyImportedModules = {};
+			for(var i = 0; i < this.length; i++) {
+				var id = this[i][0];
+				if(typeof id === "number")
+					alreadyImportedModules[id] = true;
+			}
+			for(i = 0; i < modules.length; i++) {
+				var item = modules[i];
+				// skip already imported module
+				// this implementation is not 100% perfect for weird media query combinations
+				//  when a module is imported multiple times with different media queries.
+				//  I hope this will never occur (Hey this way we have smaller bundles)
+				if(typeof item[0] !== "number" || !alreadyImportedModules[item[0]]) {
+					if(mediaQuery && !item[2]) {
+						item[2] = mediaQuery;
+					} else if(mediaQuery) {
+						item[2] = "(" + item[2] + ") and (" + mediaQuery + ")";
+					}
+					list.push(item);
+				}
+			}
+		};
+		return list;
+	};
+
+
+/***/ },
+/* 8 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/*
+		MIT License http://www.opensource.org/licenses/mit-license.php
+		Author Tobias Koppers @sokra
+	*/
+	var stylesInDom = {},
+		memoize = function(fn) {
+			var memo;
+			return function () {
+				if (typeof memo === "undefined") memo = fn.apply(this, arguments);
+				return memo;
+			};
+		},
+		isOldIE = memoize(function() {
+			return /msie [6-9]\b/.test(window.navigator.userAgent.toLowerCase());
+		}),
+		getHeadElement = memoize(function () {
+			return document.head || document.getElementsByTagName("head")[0];
+		}),
+		singletonElement = null,
+		singletonCounter = 0,
+		styleElementsInsertedAtTop = [];
+
+	module.exports = function(list, options) {
+		if(false) {
+			if(typeof document !== "object") throw new Error("The style-loader cannot be used in a non-browser environment");
+		}
+
+		options = options || {};
+		// Force single-tag solution on IE6-9, which has a hard limit on the # of <style>
+		// tags it will allow on a page
+		if (typeof options.singleton === "undefined") options.singleton = isOldIE();
+
+		// By default, add <style> tags to the bottom of <head>.
+		if (typeof options.insertAt === "undefined") options.insertAt = "bottom";
+
+		var styles = listToStyles(list);
+		addStylesToDom(styles, options);
+
+		return function update(newList) {
+			var mayRemove = [];
+			for(var i = 0; i < styles.length; i++) {
+				var item = styles[i];
+				var domStyle = stylesInDom[item.id];
+				domStyle.refs--;
+				mayRemove.push(domStyle);
+			}
+			if(newList) {
+				var newStyles = listToStyles(newList);
+				addStylesToDom(newStyles, options);
+			}
+			for(var i = 0; i < mayRemove.length; i++) {
+				var domStyle = mayRemove[i];
+				if(domStyle.refs === 0) {
+					for(var j = 0; j < domStyle.parts.length; j++)
+						domStyle.parts[j]();
+					delete stylesInDom[domStyle.id];
+				}
+			}
+		};
+	}
+
+	function addStylesToDom(styles, options) {
+		for(var i = 0; i < styles.length; i++) {
+			var item = styles[i];
+			var domStyle = stylesInDom[item.id];
+			if(domStyle) {
+				domStyle.refs++;
+				for(var j = 0; j < domStyle.parts.length; j++) {
+					domStyle.parts[j](item.parts[j]);
+				}
+				for(; j < item.parts.length; j++) {
+					domStyle.parts.push(addStyle(item.parts[j], options));
+				}
+			} else {
+				var parts = [];
+				for(var j = 0; j < item.parts.length; j++) {
+					parts.push(addStyle(item.parts[j], options));
+				}
+				stylesInDom[item.id] = {id: item.id, refs: 1, parts: parts};
+			}
+		}
+	}
+
+	function listToStyles(list) {
+		var styles = [];
+		var newStyles = {};
+		for(var i = 0; i < list.length; i++) {
+			var item = list[i];
+			var id = item[0];
+			var css = item[1];
+			var media = item[2];
+			var sourceMap = item[3];
+			var part = {css: css, media: media, sourceMap: sourceMap};
+			if(!newStyles[id])
+				styles.push(newStyles[id] = {id: id, parts: [part]});
+			else
+				newStyles[id].parts.push(part);
+		}
+		return styles;
+	}
+
+	function insertStyleElement(options, styleElement) {
+		var head = getHeadElement();
+		var lastStyleElementInsertedAtTop = styleElementsInsertedAtTop[styleElementsInsertedAtTop.length - 1];
+		if (options.insertAt === "top") {
+			if(!lastStyleElementInsertedAtTop) {
+				head.insertBefore(styleElement, head.firstChild);
+			} else if(lastStyleElementInsertedAtTop.nextSibling) {
+				head.insertBefore(styleElement, lastStyleElementInsertedAtTop.nextSibling);
+			} else {
+				head.appendChild(styleElement);
+			}
+			styleElementsInsertedAtTop.push(styleElement);
+		} else if (options.insertAt === "bottom") {
+			head.appendChild(styleElement);
+		} else {
+			throw new Error("Invalid value for parameter 'insertAt'. Must be 'top' or 'bottom'.");
+		}
+	}
+
+	function removeStyleElement(styleElement) {
+		styleElement.parentNode.removeChild(styleElement);
+		var idx = styleElementsInsertedAtTop.indexOf(styleElement);
+		if(idx >= 0) {
+			styleElementsInsertedAtTop.splice(idx, 1);
+		}
+	}
+
+	function createStyleElement(options) {
+		var styleElement = document.createElement("style");
+		styleElement.type = "text/css";
+		insertStyleElement(options, styleElement);
+		return styleElement;
+	}
+
+	function createLinkElement(options) {
+		var linkElement = document.createElement("link");
+		linkElement.rel = "stylesheet";
+		insertStyleElement(options, linkElement);
+		return linkElement;
+	}
+
+	function addStyle(obj, options) {
+		var styleElement, update, remove;
+
+		if (options.singleton) {
+			var styleIndex = singletonCounter++;
+			styleElement = singletonElement || (singletonElement = createStyleElement(options));
+			update = applyToSingletonTag.bind(null, styleElement, styleIndex, false);
+			remove = applyToSingletonTag.bind(null, styleElement, styleIndex, true);
+		} else if(obj.sourceMap &&
+			typeof URL === "function" &&
+			typeof URL.createObjectURL === "function" &&
+			typeof URL.revokeObjectURL === "function" &&
+			typeof Blob === "function" &&
+			typeof btoa === "function") {
+			styleElement = createLinkElement(options);
+			update = updateLink.bind(null, styleElement);
+			remove = function() {
+				removeStyleElement(styleElement);
+				if(styleElement.href)
+					URL.revokeObjectURL(styleElement.href);
+			};
+		} else {
+			styleElement = createStyleElement(options);
+			update = applyToTag.bind(null, styleElement);
+			remove = function() {
+				removeStyleElement(styleElement);
+			};
+		}
+
+		update(obj);
+
+		return function updateStyle(newObj) {
+			if(newObj) {
+				if(newObj.css === obj.css && newObj.media === obj.media && newObj.sourceMap === obj.sourceMap)
+					return;
+				update(obj = newObj);
+			} else {
+				remove();
+			}
+		};
+	}
+
+	var replaceText = (function () {
+		var textStore = [];
+
+		return function (index, replacement) {
+			textStore[index] = replacement;
+			return textStore.filter(Boolean).join('\n');
+		};
+	})();
+
+	function applyToSingletonTag(styleElement, index, remove, obj) {
+		var css = remove ? "" : obj.css;
+
+		if (styleElement.styleSheet) {
+			styleElement.styleSheet.cssText = replaceText(index, css);
+		} else {
+			var cssNode = document.createTextNode(css);
+			var childNodes = styleElement.childNodes;
+			if (childNodes[index]) styleElement.removeChild(childNodes[index]);
+			if (childNodes.length) {
+				styleElement.insertBefore(cssNode, childNodes[index]);
+			} else {
+				styleElement.appendChild(cssNode);
+			}
+		}
+	}
+
+	function applyToTag(styleElement, obj) {
+		var css = obj.css;
+		var media = obj.media;
+		var sourceMap = obj.sourceMap;
+
+		if(media) {
+			styleElement.setAttribute("media", media)
+		}
+
+		if(styleElement.styleSheet) {
+			styleElement.styleSheet.cssText = css;
+		} else {
+			while(styleElement.firstChild) {
+				styleElement.removeChild(styleElement.firstChild);
+			}
+			styleElement.appendChild(document.createTextNode(css));
+		}
+	}
+
+	function updateLink(linkElement, obj) {
+		var css = obj.css;
+		var media = obj.media;
+		var sourceMap = obj.sourceMap;
+
+		if(sourceMap) {
+			// http://stackoverflow.com/a/26603875
+			css += "\n/*# sourceMappingURL=data:application/json;base64," + btoa(unescape(encodeURIComponent(JSON.stringify(sourceMap)))) + " */";
+		}
+
+		var blob = new Blob([css], { type: "text/css" });
+
+		var oldSrc = linkElement.href;
+
+		linkElement.href = URL.createObjectURL(blob);
+
+		if(oldSrc)
+			URL.revokeObjectURL(oldSrc);
+	}
+
+
+/***/ },
+/* 9 */
+/***/ function(module, exports) {
+
+	module.exports = "module.exports = \"<ul class=\\\"pagination\\\" role=\\\"navigation\\\" aria-label=\\\"Pagination\\\">\\n  <li class=\\\"pagination-previous\\\" [class.disabled]=\\\"getPage() === 1\\\">\\n    <a href=\\\"\\\" (click)=\\\"setPage($event, getPage() - 1)\\\" aria-label=\\\"Prev page\\\">&lsaquo;</a>\\n  </li>\\n\\n  <li [class.active]=\\\"getPage() === page.value\\\" *ngFor=\\\"#page of pages\\\">\\n    <a href=\\\"\\\" (click)=\\\"setPage($event, page.value)\\\">{{ page.label }}</a>\\n  </li>\\n\\n  <li class=\\\"pagination-next\\\" [class.disabled]=\\\"getPage() === pages.length\\\">\\n    <a href=\\\"\\\" (click)=\\\"setPage($event, getPage() + 1)\\\" aria-label=\\\"Next page\\\">&rsaquo;</a>\\n  </li>\\n</ul>\";";
+
+/***/ }
+/******/ ])));
