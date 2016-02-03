@@ -2,6 +2,7 @@ var path = require('path');
 
 module.exports = {
   entry: {
+    'index': './modules/index.ts',
     'paginate-pipe': './modules/paginate-pipe.ts',
     'pagination-controls-cmp': './modules/pagination-controls-cmp.ts',
     'pagination-service': './modules/pagination-service.ts'

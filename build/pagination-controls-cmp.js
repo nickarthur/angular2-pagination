@@ -53,9 +53,9 @@
 	var __metadata = (this && this.__metadata) || function (k, v) {
 	    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 	};
-	var core_1 = __webpack_require__(1);
+	var core_1 = __webpack_require__(4);
 	var pagination_service_1 = __webpack_require__(2);
-	__webpack_require__(3);
+	__webpack_require__(5);
 	var PaginationControlsCmp = (function () {
 	    function PaginationControlsCmp(_service) {
 	        var _this = this;
@@ -157,7 +157,7 @@
 	    PaginationControlsCmp = __decorate([
 	        core_1.Component({
 	            selector: 'pagination-controls',
-	            template: __webpack_require__(7),
+	            template: __webpack_require__(9),
 	        }), 
 	        __metadata('design:paramtypes', [pagination_service_1.PaginationService])
 	    ], PaginationControlsCmp);
@@ -168,28 +168,30 @@
 
 
 /***/ },
-/* 1 */
-/***/ function(module, exports) {
-
-	module.exports = require("angular2/core");
-
-/***/ },
+/* 1 */,
 /* 2 */
 /***/ function(module, exports) {
 
 	module.exports = require("./pagination-service");
 
 /***/ },
-/* 3 */
+/* 3 */,
+/* 4 */
+/***/ function(module, exports) {
+
+	module.exports = require("angular2/core");
+
+/***/ },
+/* 5 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(4);
+	var content = __webpack_require__(6);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
-	var update = __webpack_require__(6)(content, {});
+	var update = __webpack_require__(8)(content, {});
 	if(content.locals) module.exports = content.locals;
 	// Hot Module Replacement
 	if(false) {
@@ -206,10 +208,10 @@
 	}
 
 /***/ },
-/* 4 */
+/* 6 */
 /***/ function(module, exports, __webpack_require__) {
 
-	exports = module.exports = __webpack_require__(5)();
+	exports = module.exports = __webpack_require__(7)();
 	// imports
 
 
@@ -220,7 +222,7 @@
 
 
 /***/ },
-/* 5 */
+/* 7 */
 /***/ function(module, exports) {
 
 	/*
@@ -276,7 +278,7 @@
 
 
 /***/ },
-/* 6 */
+/* 8 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/*
@@ -530,7 +532,7 @@
 
 
 /***/ },
-/* 7 */
+/* 9 */
 /***/ function(module, exports) {
 
 	module.exports = "module.exports = \"<ul class=\\\"pagination\\\" role=\\\"navigation\\\" aria-label=\\\"Pagination\\\">\\n  <li class=\\\"pagination-previous\\\" [class.disabled]=\\\"getPage() === 1\\\">\\n    <a href=\\\"\\\" (click)=\\\"setPage($event, getPage() - 1)\\\" aria-label=\\\"Prev page\\\">&lsaquo;</a>\\n  </li>\\n\\n  <li [class.active]=\\\"getPage() === page.value\\\" *ngFor=\\\"#page of pages\\\">\\n    <a href=\\\"\\\" (click)=\\\"setPage($event, page.value)\\\">{{ page.label }}</a>\\n  </li>\\n\\n  <li class=\\\"pagination-next\\\" [class.disabled]=\\\"getPage() === pages.length\\\">\\n    <a href=\\\"\\\" (click)=\\\"setPage($event, getPage() + 1)\\\" aria-label=\\\"Next page\\\">&rsaquo;</a>\\n  </li>\\n</ul>\";";

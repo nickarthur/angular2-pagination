@@ -53,7 +53,7 @@
 	var __metadata = (this && this.__metadata) || function (k, v) {
 	    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 	};
-	var core_1 = __webpack_require__(1);
+	var core_1 = __webpack_require__(4);
 	var pagination_service_1 = __webpack_require__(2);
 	var PaginatePipe = (function () {
 	    function PaginatePipe(service) {
@@ -138,16 +138,18 @@
 
 
 /***/ },
-/* 1 */
-/***/ function(module, exports) {
-
-	module.exports = require("angular2/core");
-
-/***/ },
+/* 1 */,
 /* 2 */
 /***/ function(module, exports) {
 
 	module.exports = require("./pagination-service");
+
+/***/ },
+/* 3 */,
+/* 4 */
+/***/ function(module, exports) {
+
+	module.exports = require("angular2/core");
 
 /***/ }
 /******/ ])));
