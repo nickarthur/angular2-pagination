@@ -4,7 +4,7 @@ export interface IPage {
     label: string;
     value: any;
 }
-export declare class PaginationControlsCpm {
+export declare class PaginationControlsCmp {
     private _service;
     private _id;
     change: EventEmitter<number>;

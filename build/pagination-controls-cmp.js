@@ -56,8 +56,8 @@
 	var core_1 = __webpack_require__(1);
 	var pagination_service_1 = __webpack_require__(2);
 	__webpack_require__(3);
-	var PaginationControlsCpm = (function () {
-	    function PaginationControlsCpm(_service) {
+	var PaginationControlsCmp = (function () {
+	    function PaginationControlsCmp(_service) {
 	        var _this = this;
 	        this._service = _service;
 	        this.change = new core_1.EventEmitter();
@@ -73,23 +73,23 @@
 	            _this._setPage(instance.currentPage);
 	        });
 	    }
-	    PaginationControlsCpm.prototype.ngOnDestroy = function () {
+	    PaginationControlsCmp.prototype.ngOnDestroy = function () {
 	        this._changeSub.unsubscribe();
 	    };
 	    /**
 	     * Set the current page number.
 	     */
-	    PaginationControlsCpm.prototype.setPage = function (event, page) {
+	    PaginationControlsCmp.prototype.setPage = function (event, page) {
 	        event.preventDefault();
 	        this._service.setCurrentPage(this._id, page);
 	    };
 	    /**
 	     * Get the current page number.
 	     */
-	    PaginationControlsCpm.prototype.getPage = function () {
+	    PaginationControlsCmp.prototype.getPage = function () {
 	        return this._service.getCurrentPage(this._id);
 	    };
-	    PaginationControlsCpm.prototype._setPage = function (page) {
+	    PaginationControlsCmp.prototype._setPage = function (page) {
 	        if (this._page !== page) {
 	            this._page = page;
 	            this.change.emit({ page: page });
@@ -98,7 +98,7 @@
 	    /**
 	     * Returns an array of IPage objects to use in the pagination controls.
 	     */
-	    PaginationControlsCpm.prototype._createPageArray = function (currentPage, itemsPerPage, totalItems, paginationRange) {
+	    PaginationControlsCmp.prototype._createPageArray = function (currentPage, itemsPerPage, totalItems, paginationRange) {
 	        if (paginationRange === void 0) { paginationRange = 5; }
 	        var totalPages = Math.ceil(totalItems / itemsPerPage);
 	        var halfWay = Math.ceil(paginationRange / 2);
@@ -128,7 +128,7 @@
 	     * Given the position in the sequence of pagination links [i],
 	     * figure out what page number corresponds to that position.
 	     */
-	    PaginationControlsCpm.prototype.calculatePageNumber = function (page, currentPage, paginationRange, totalPages) {
+	    PaginationControlsCmp.prototype.calculatePageNumber = function (page, currentPage, paginationRange, totalPages) {
 	        if (page === paginationRange) {
 	            return totalPages;
 	        }
@@ -149,21 +149,22 @@
 	    __decorate([
 	        core_1.Input(), 
 	        __metadata('design:type', String)
-	    ], PaginationControlsCpm.prototype, "_id", void 0);
+	    ], PaginationControlsCmp.prototype, "_id", void 0);
 	    __decorate([
 	        core_1.Output(), 
-	        __metadata('design:type', core_1.EventEmitter)
-	    ], PaginationControlsCpm.prototype, "change", void 0);
-	    PaginationControlsCpm = __decorate([
+	        __metadata('design:type', (typeof (_a = typeof core_1.EventEmitter !== 'undefined' && core_1.EventEmitter) === 'function' && _a) || Object)
+	    ], PaginationControlsCmp.prototype, "change", void 0);
+	    PaginationControlsCmp = __decorate([
 	        core_1.Component({
 	            selector: 'pagination-controls',
 	            template: __webpack_require__(7),
 	        }), 
 	        __metadata('design:paramtypes', [pagination_service_1.PaginationService])
-	    ], PaginationControlsCpm);
-	    return PaginationControlsCpm;
+	    ], PaginationControlsCmp);
+	    return PaginationControlsCmp;
+	    var _a;
 	})();
-	exports.PaginationControlsCpm = PaginationControlsCpm;
+	exports.PaginationControlsCmp = PaginationControlsCmp;
 
 
 /***/ },

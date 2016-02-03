@@ -13,7 +13,7 @@ export interface IPage {
   selector: 'pagination-controls',
   template: require('html!./pagination-controls-cmp.html'),
 })
-export class PaginationControlsCpm {
+export class PaginationControlsCmp {
   @Input() private _id: string;
 
   @Output() public change: EventEmitter<number> = new EventEmitter();
