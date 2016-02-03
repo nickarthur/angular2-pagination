@@ -34,8 +34,7 @@ module.exports = {
   },
   module: {
     loaders: [
-      {test: /\.tsx?$/, loader: 'ts-loader'},
-      {test: /\.html$/, loader: 'html-loader'}
+      {test: /\.tsx?$/, loader: 'ts-loader'}
     ]
   }
 };

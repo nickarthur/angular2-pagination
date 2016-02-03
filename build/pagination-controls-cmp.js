@@ -535,7 +535,7 @@
 /* 9 */
 /***/ function(module, exports) {
 
-	module.exports = "module.exports = \"<ul class=\\\"pagination\\\" role=\\\"navigation\\\" aria-label=\\\"Pagination\\\">\\n  <li class=\\\"pagination-previous\\\" [class.disabled]=\\\"getPage() === 1\\\">\\n    <a href=\\\"\\\" (click)=\\\"setPage($event, getPage() - 1)\\\" aria-label=\\\"Prev page\\\">&lsaquo;</a>\\n  </li>\\n\\n  <li [class.active]=\\\"getPage() === page.value\\\" *ngFor=\\\"#page of pages\\\">\\n    <a href=\\\"\\\" (click)=\\\"setPage($event, page.value)\\\">{{ page.label }}</a>\\n  </li>\\n\\n  <li class=\\\"pagination-next\\\" [class.disabled]=\\\"getPage() === pages.length\\\">\\n    <a href=\\\"\\\" (click)=\\\"setPage($event, getPage() + 1)\\\" aria-label=\\\"Next page\\\">&rsaquo;</a>\\n  </li>\\n</ul>\";";
+	module.exports = "<ul class=\"pagination\" role=\"navigation\" aria-label=\"Pagination\">\n  <li class=\"pagination-previous\" [class.disabled]=\"getPage() === 1\">\n    <a href=\"\" (click)=\"setPage($event, getPage() - 1)\" aria-label=\"Prev page\">&lsaquo;</a>\n  </li>\n\n  <li [class.active]=\"getPage() === page.value\" *ngFor=\"#page of pages\">\n    <a href=\"\" (click)=\"setPage($event, page.value)\">{{ page.label }}</a>\n  </li>\n\n  <li class=\"pagination-next\" [class.disabled]=\"getPage() === pages.length\">\n    <a href=\"\" (click)=\"setPage($event, getPage() + 1)\" aria-label=\"Next page\">&rsaquo;</a>\n  </li>\n</ul>";
 
 /***/ }
 /******/ ])));
