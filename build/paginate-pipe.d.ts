@@ -4,7 +4,7 @@ export declare class PaginatePipe {
     private _pagination;
     constructor(service: PaginationService);
     transform(collection: any, args: any[]): any;
-    private _createFromConfig(collection, args);
+    private _createFromConfig(collection, config);
     private _parseTotalItems(collection, totalItems?);
     private _parseValue(value, dfault?);
 }

@@ -44,6 +44,7 @@
 /* 0 */
 /***/ function(module, exports, __webpack_require__) {
 
+	"use strict";
 	var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
 	    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
 	    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -60,6 +61,8 @@
 	        this.service = service;
 	    }
 	    PaginatePipe.prototype.transform = function (collection, args) {
+	        if (!collection)
+	            return;
 	        var pagination = this._createFromConfig(collection, args);
 	        if (!this._pagination) {
 	            this._pagination = pagination;
@@ -83,9 +86,8 @@
 	        }
 	        return collection;
 	    };
-	    PaginatePipe.prototype._createFromConfig = function (collection, args) {
+	    PaginatePipe.prototype._createFromConfig = function (collection, config) {
 	        var instance;
-	        var config = args[0];
 	        if (_.isString(config) || _.isNumber(config)) {
 	            instance = {
 	                id: this.service.defaultId,
@@ -133,7 +135,7 @@
 	        __metadata('design:paramtypes', [pagination_service_1.PaginationService])
 	    ], PaginatePipe);
 	    return PaginatePipe;
-	})();
+	}());
 	exports.PaginatePipe = PaginatePipe;
 
 
