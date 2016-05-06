@@ -44,6 +44,7 @@
 /* 0 */
 /***/ function(module, exports, __webpack_require__) {
 
+	"use strict";
 	var core_1 = __webpack_require__(4);
 	var DEFAULT_ID = 'ng2_pages';
 	var PaginationService = (function () {
@@ -171,7 +172,7 @@
 	        }
 	    };
 	    return PaginationService;
-	})();
+	}());
 	exports.PaginationService = PaginationService;
 
 

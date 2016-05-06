@@ -12,6 +12,9 @@ export class PaginatePipe {
   constructor(private service: PaginationService) {}
 
   public transform(collection: any, args: any[]): any {
+    if (!collection)
+      return;
+      
     let pagination = this._createFromConfig(collection, args);
     if (!this._pagination) {
       this._pagination = pagination;
@@ -37,10 +40,9 @@ export class PaginatePipe {
     return collection;
   }
 
-  private _createFromConfig(collection: any, args: any): IPaginationInstance {
+  private _createFromConfig(collection: any, config: any): IPaginationInstance {
     let instance: IPaginationInstance;
-    let config = args[0];
-
+    
     if (_.isString(config) || _.isNumber(config)) {
       instance = {
         id: this.service.defaultId,
