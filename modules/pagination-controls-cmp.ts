@@ -1,4 +1,4 @@
-import {Component, Input, Output, EventEmitter} from 'angular2/core';
+import {Component, Input, Output, EventEmitter} from '@angular/core';
 import {Subscription} from 'rxjs/Rx';
 import {PaginationService} from "./pagination-service";
 

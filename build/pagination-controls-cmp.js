@@ -153,7 +153,7 @@
 	    ], PaginationControlsCmp.prototype, "_id", void 0);
 	    __decorate([
 	        core_1.Output(), 
-	        __metadata('design:type', core_1.EventEmitter)
+	        __metadata('design:type', (typeof (_a = typeof core_1.EventEmitter !== 'undefined' && core_1.EventEmitter) === 'function' && _a) || Object)
 	    ], PaginationControlsCmp.prototype, "change", void 0);
 	    PaginationControlsCmp = __decorate([
 	        core_1.Component({
@@ -163,6 +163,7 @@
 	        __metadata('design:paramtypes', [pagination_service_1.PaginationService])
 	    ], PaginationControlsCmp);
 	    return PaginationControlsCmp;
+	    var _a;
 	}());
 	exports.PaginationControlsCmp = PaginationControlsCmp;
 
@@ -179,7 +180,7 @@
 /* 4 */
 /***/ function(module, exports) {
 
-	module.exports = require("angular2/core");
+	module.exports = require("@angular/core");
 
 /***/ },
 /* 5 */
@@ -533,7 +534,7 @@
 /* 9 */
 /***/ function(module, exports) {
 
-	module.exports = "<ul class=\"pagination\" role=\"navigation\" aria-label=\"Pagination\">\n  <li class=\"pagination-previous\" [class.disabled]=\"getPage() === 1\">\n    <a href=\"\" (click)=\"setPage($event, getPage() - 1)\" aria-label=\"Prev page\">&lsaquo;</a>\n  </li>\n\n  <li [class.active]=\"getPage() === page.value\" *ngFor=\"#page of pages\">\n    <a href=\"\" (click)=\"setPage($event, page.value)\">{{ page.label }}</a>\n  </li>\n\n  <li class=\"pagination-next\" [class.disabled]=\"getPage() === pages.length\">\n    <a href=\"\" (click)=\"setPage($event, getPage() + 1)\" aria-label=\"Next page\">&rsaquo;</a>\n  </li>\n</ul>";
+	module.exports = "<ul class=\"pagination\" role=\"navigation\" aria-label=\"Pagination\">\n  <li class=\"pagination-previous\" [class.disabled]=\"getPage() === 1\">\n    <a href=\"\" (click)=\"setPage($event, getPage() - 1)\" aria-label=\"Prev page\">&lsaquo;</a>\n  </li>\n\n  <li [class.active]=\"getPage() === page.value\" *ngFor=\"let page of pages\">\n    <a href=\"\" (click)=\"setPage($event, page.value)\">{{ page.label }}</a>\n  </li>\n\n  <li class=\"pagination-next\" [class.disabled]=\"getPage() === pages.length\">\n    <a href=\"\" (click)=\"setPage($event, getPage() + 1)\" aria-label=\"Next page\">&rsaquo;</a>\n  </li>\n</ul>";
 
 /***/ }
 /******/ ])));

@@ -151,7 +151,7 @@
 /* 4 */
 /***/ function(module, exports) {
 
-	module.exports = require("angular2/core");
+	module.exports = require("@angular/core");
 
 /***/ }
 /******/ ])));

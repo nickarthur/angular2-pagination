@@ -3,7 +3,7 @@
     <a href="" (click)="setPage($event, getPage() - 1)" aria-label="Prev page">&lsaquo;</a>
   </li>
 
-  <li [class.active]="getPage() === page.value" *ngFor="#page of pages">
+  <li [class.active]="getPage() === page.value" *ngFor="let page of pages">
     <a href="" (click)="setPage($event, page.value)">{{ page.label }}</a>
   </li>
 

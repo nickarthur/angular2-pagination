@@ -20,8 +20,8 @@ module.exports = {
       './paginate-pipe': './paginate-pipe',
       './pagination-controls-cmp': './pagination-controls-cmp',
       './pagination-service': './pagination-service',
-      'angular2/core': 'angular2/core',
-      'angular2/common': 'angular2/common',
+      '@angular/core': '@angular/core',
+      '@angular/common': '@angular/common',
       'rxjs/Rx': 'rxjs/Rx'
     }
   ],
