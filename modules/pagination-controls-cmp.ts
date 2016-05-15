@@ -2,16 +2,16 @@ import {Component, Input, Output, EventEmitter} from '@angular/core';
 import {Subscription} from 'rxjs/Rx';
 import {PaginationService} from "./pagination-service";
 
-require('style!css!less!./pagination-controls-cmp.less');
-
 export interface IPage {
   label: string;
   value: any;
 }
 
+const COMPONENT_TEMPLATE = `{COMPONENT_TEMPLATE}`;
+
 @Component({
   selector: 'pagination-controls',
-  template: require('html!./pagination-controls-cmp.html'),
+  template: COMPONENT_TEMPLATE,
 })
 export class PaginationControlsCmp {
   @Input() private _id: string;
